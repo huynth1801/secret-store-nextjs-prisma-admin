@@ -1,49 +1,63 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { verifyJWT } from "@/lib/jwt"
+import { getErrorResponse } from "@/lib/utils"
+import { NextRequest, NextResponse } from "next/server"
 
-// Danh sách các route cần bảo vệ
-const protectedRoutes = ["/", "/profile", "/settings"];
+export async function middleware(req: NextRequest) {
+  if (req.nextUrl.pathname.startsWith("/api/auth")) return NextResponse.next()
 
-const publicOnlyRoutes = ["/sign-in", "/sign-up"];
-
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Kiểm tra token xác thực
-  const token = request.cookies.get("refreshToken")?.value;
-
-  // Nếu người dùng đã đăng nhập và cố gắng truy cập các route công khai
-  if (token && publicOnlyRoutes.includes(pathname)) {
-    // Chuyển hướng về trang chủ
-    return NextResponse.redirect(new URL("/", request.url));
+  function isTargetingAPI() {
+    return req.nextUrl.pathname.startsWith("/api")
   }
 
-  // Kiểm tra xem route hiện tại có cần bảo vệ không
-  if (protectedRoutes.includes(pathname)) {
-    if (!token) {
-      // Nếu không có token, chuyển hướng đến trang đăng nhập
-      return NextResponse.redirect(new URL("/sign-in", request.url));
+  function getToken() {
+    let token: string | undefined
+
+    if (req.cookies.has("token")) {
+      token = req.cookies.get("token")?.value
+    } else if (req.headers.get("Authorization")?.startsWith("Bearer ")) {
+      token = req.headers.get("Authorization")?.substring(7)
     }
 
-    // Ở đây bạn có thể thêm logic để xác thực token
-    // Ví dụ: gọi API để xác thực token
-
-    // Nếu token hợp lệ, cho phép truy cập
-    return NextResponse.next();
+    return token
   }
 
-  // Đối với các route không được bảo vệ, cho phép truy cập bình thường
-  return NextResponse.next();
+  const token = getToken()
+
+  if (!token) {
+    if (isTargetingAPI()) return getErrorResponse(401, "INVALID TOKEN")
+
+    return NextResponse.redirect(new URL("/login", req.url))
+  }
+
+  const response = NextResponse.next()
+
+  try {
+    const { sub } = await verifyJWT<{ sub: string }>(token)
+    response.headers.set("X-USER-ID", sub)
+  } catch (error) {
+    if (isTargetingAPI()) {
+      return getErrorResponse(401, "UNAUTHORIZED")
+    }
+
+    const redirect = NextResponse.redirect(new URL(`/login`, req.url))
+    redirect.cookies.delete("token")
+    redirect.cookies.delete("logged-in")
+    return redirect
+  }
+
+  return response
 }
 
-// Cấu hình các route mà middleware sẽ chạy
 export const config = {
   matcher: [
     "/",
+    "/products/:path*",
+    "/banners/:path*",
+    "/orders/:path*",
+    "/categories/:path*",
+    "/payments/:path*",
+    "/codes/:path*",
+    "/users/:path*",
     "/api/:path*",
-    "/profile/:path*",
-    "/settings/:path*",
-    "/sign-in",
-    "/sign-up",
   ],
-};
+}
