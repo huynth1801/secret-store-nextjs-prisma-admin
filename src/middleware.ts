@@ -31,19 +31,19 @@ export async function middleware(req: NextRequest) {
 
   const response = NextResponse.next()
 
-  try {
-    const { sub } = await verifyJWT<{ sub: string }>(token)
-    response.headers.set("X-USER-ID", sub)
-  } catch (error) {
-    if (isTargetingAPI()) {
-      return getErrorResponse(401, "UNAUTHORIZED")
-    }
+  // try {
+  //   const { sub } = await verifyJWT<{ sub: string }>(token)
+  //   response.headers.set("X-USER-ID", sub)
+  // } catch (error) {
+  //   if (isTargetingAPI()) {
+  //     return getErrorResponse(401, "UNAUTHORIZED")
+  //   }
 
-    const redirect = NextResponse.redirect(new URL(`/login`, req.url))
-    redirect.cookies.delete("token")
-    redirect.cookies.delete("logged-in")
-    return redirect
-  }
+  //   const redirect = NextResponse.redirect(new URL(`/login`, req.url))
+  //   redirect.cookies.delete("token")
+  //   redirect.cookies.delete("logged-in")
+  //   return redirect
+  // }
 
   return response
 }

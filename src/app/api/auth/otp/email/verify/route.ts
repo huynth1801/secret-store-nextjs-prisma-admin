@@ -1,4 +1,4 @@
-import { signJWT, verifyJWT } from "@/lib/jwt"
+import { signJWT } from "@/lib/jwt"
 import prisma from "@/lib/prisma"
 import { getErrorResponse } from "@/lib/utils"
 import { NextRequest, NextResponse } from "next/server"
@@ -9,8 +9,6 @@ export async function POST(req: NextRequest) {
     const expiryMinutes = 30 * 24 * 60
 
     let { email, OTP } = await req.json()
-
-    email = email.toString().toLowerCase()
 
     email = email.toString().toLowerCase()
 

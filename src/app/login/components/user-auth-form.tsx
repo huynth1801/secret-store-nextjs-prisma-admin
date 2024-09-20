@@ -1,19 +1,23 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn, isVariableValid } from "@/lib/utils";
-import { Loader, MailIcon, SmartphoneIcon } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { isEmailValidCustom, isVietnamesePhoneNumberValid } from "@/lib/utils";
-import * as React from "react";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { cn, isVariableValid } from "@/lib/utils"
+import { Loader, MailIcon, SmartphoneIcon } from "lucide-react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { isEmailValidCustom, isVietnamesePhoneNumberValid } from "@/lib/utils"
+import * as React from "react"
+import { InputOTPForm } from "./input-otp-pattern"
+import { PhoneAuthProvider, RecaptchaVerifier } from "firebase/auth"
+import auth from "@/app/firebase/config"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [fetchedOTP, setFetchedOTP] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [fetchedOTP, setFetchedOTP] = React.useState<boolean>(false)
+  const [verificationId, setVerificationId] = React.useState<string>("")
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
@@ -38,29 +42,29 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       </div>
       <ChangeMethodButton isLoading={isLoading} />
     </div>
-  );
+  )
 }
 
 interface ChangeMethodButtonProps {
-  isLoading: boolean;
+  isLoading: boolean
 }
 
 function ChangeMethodButton({ isLoading }: ChangeMethodButtonProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams() ?? "";
-  const method = searchParams.get("method") ?? "";
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams() ?? ""
+  const method = searchParams.get("method") ?? ""
 
   function changeMethod() {
-    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    const params = new URLSearchParams(Array.from(searchParams.entries()))
 
-    params.set("method", method == "phone" ? "email" : "phone");
-    const search = params.toString();
-    const query = search ? `?${search}` : "";
+    params.set("method", method == "phone" ? "email" : "phone")
+    const search = params.toString()
+    const query = search ? `?${search}` : ""
 
     router.replace(`${pathname}${query}`, {
       scroll: false,
-    });
+    })
   }
 
   if (method === "phone")
@@ -73,7 +77,7 @@ function ChangeMethodButton({ isLoading }: ChangeMethodButtonProps) {
         )}
         Email
       </Button>
-    );
+    )
 
   return (
     <Button onClick={changeMethod} disabled={isLoading} type="button">
@@ -84,88 +88,96 @@ function ChangeMethodButton({ isLoading }: ChangeMethodButtonProps) {
       )}
       Phone Number
     </Button>
-  );
+  )
 }
 
 interface TryComponentsProps {
-  isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setFetchedOTP: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setFetchedOTP: React.Dispatch<React.SetStateAction<boolean>>
+  setVerficationId: React.Dispatch<React.SetStateAction<string>>
 }
 
 function TryComponents({
   isLoading,
   setIsLoading,
   setFetchedOTP,
+  setVerficationId,
 }: TryComponentsProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const method = searchParams.get("method");
-  const email = searchParams.get("email") ?? "";
-  const phone = searchParams.get("phone") ?? "";
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const method = searchParams.get("method")
+  const email = searchParams.get("email") ?? ""
+  const phone = searchParams.get("phone") ?? ""
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    const params = new URLSearchParams(Array.from(searchParams.entries()))
 
-    params.set("email", event.target.value);
-    const search = params.toString();
-    const query = search ? `?${search}` : "";
+    params.set("email", event.target.value)
+    const search = params.toString()
+    const query = search ? `?${search}` : ""
 
     router.replace(`${pathname}${query}`, {
       scroll: false,
-    });
-  };
+    })
+  }
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    const params = new URLSearchParams(Array.from(searchParams.entries()))
 
-    params.set("phone", event.target.value);
-    const search = params.toString();
-    const query = search ? `?${search}` : "";
+    params.set("phone", event.target.value)
+    const search = params.toString()
+    const query = search ? `?${search}` : ""
 
     router.replace(`${pathname}${query}`, {
       scroll: false,
-    });
-  };
+    })
+  }
 
   async function onSubmitEmail() {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
 
       const response = await fetch("/api/auth/otp/email/try", {
         method: "POST",
         body: JSON.stringify({ email }),
         cache: "no-store",
-      });
+      })
 
       if (response.ok) {
-        setFetchedOTP(true);
+        setFetchedOTP(true)
       }
 
-      setIsLoading(false);
+      setIsLoading(false)
     } catch (error) {
-      console.error({ error });
+      console.error({ error })
     }
   }
 
   async function onSubmitPhone() {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
 
-      const response = await fetch("/api/auth/otp/phone/try", {
-        method: "POST",
-        body: JSON.stringify({ phone }),
-        cache: "no-store",
-      });
+      // Initialize reCAPTCHA verifier here
+      const recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        { size: "invisible" }
+      )
 
-      if (response.ok) {
-        setFetchedOTP(true);
-      }
+      const phoneProvider = new PhoneAuthProvider(auth)
+      const verificationId = await phoneProvider.verifyPhoneNumber(
+        phone,
+        recaptchaVerifier
+      )
 
-      setIsLoading(false);
+      setVerficationId(verificationId)
+      setFetchedOTP(true)
+      setIsLoading(false)
     } catch (error) {
-      console.error({ error });
+      console.error("Error when sending SMS OTP:", { error })
+      setIsLoading(false)
     }
   }
 
@@ -203,8 +215,9 @@ function TryComponents({
           {isLoading && <Loader className="mr-2 h-4 animate-spin" />}
           Login with Phone
         </Button>
+        <div id="recaptcha-container" /> {/* Added reCAPTCHA container */}
       </>
-    );
+    )
 
   return (
     <>
@@ -235,38 +248,38 @@ function TryComponents({
         Login with Email
       </Button>
     </>
-  );
+  )
 }
 
 interface VerifyComponentsProps {
-  isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function VerifyComponents({ isLoading, setIsLoading }: VerifyComponentsProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const method = searchParams.get("method");
-  const email = searchParams.get("email");
-  const phone = searchParams.get("phone");
-  const OTP = searchParams.get("OTP");
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const method = searchParams.get("method")
+  const email = searchParams.get("email")
+  const phone = searchParams.get("phone")
+  const OTP = searchParams.get("OTP")
 
-  const handleOTPChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const params = new URLSearchParams(Array.from(searchParams.entries()));
+  const handleOTPChange = (otpValue: string) => {
+    const params = new URLSearchParams(Array.from(searchParams.entries()))
 
-    params.set("OTP", event.target.value);
-    const search = params.toString();
-    const query = search ? `?${search}` : "";
+    params.set("OTP", otpValue)
+    const search = params.toString()
+    const query = search ? `?${search}` : ""
 
     router.replace(`${pathname}${query}`, {
       scroll: false,
-    });
-  };
+    })
+  }
 
   async function onVerifyOTP() {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
 
       const response = await fetch(
         method === "phone"
@@ -281,33 +294,25 @@ function VerifyComponents({ isLoading, setIsLoading }: VerifyComponentsProps) {
           }),
           cache: "no-store",
         }
-      );
+      )
 
       if (response.ok) {
-        window.location.assign(`/`);
+        window.location.assign(`/`)
       }
     } catch (error) {
-      console.error({ error });
+      console.error({ error })
     }
   }
 
   return (
     <>
       <div className="grid gap-1">
-        <Label className="text-sm font-light text-foreground/60" htmlFor="OTP">
-          One-Time Password
-        </Label>
-        <Input
-          placeholder="12345"
-          disabled={isLoading}
-          onChange={handleOTPChange}
-          required
-        />
+        <InputOTPForm onChange={handleOTPChange} disabled={isLoading} />
       </div>
       <Button onClick={onVerifyOTP} disabled={isLoading}>
         {isLoading && <Loader className="mr-2 h-4 animate-spin" />}
         Submit
       </Button>
     </>
-  );
+  )
 }
