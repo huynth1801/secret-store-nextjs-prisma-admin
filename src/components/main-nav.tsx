@@ -14,7 +14,7 @@ export function MainNav({
     {
       href: "/banners",
       label: "Banners",
-      active: pathname.includes("/banneres"),
+      active: pathname.includes("/banners"),
     },
     {
       href: `/categories`,
