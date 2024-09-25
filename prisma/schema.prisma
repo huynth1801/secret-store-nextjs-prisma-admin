@@ -63,8 +63,27 @@ model Category {
   description   String?
   
 
+  products    Product[]
+  banners     Banner[]
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
 
-  Banner Banner[]
+model Product {
+  id    String    @id     @default(cuid())
+  title String
+  description   String?
+  images        String[]
+  keywords      String[]
+  meta          Json?
+
+  price         Float
+  stock         Int   @default(0)
+
+  categories    Category[]
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
 }

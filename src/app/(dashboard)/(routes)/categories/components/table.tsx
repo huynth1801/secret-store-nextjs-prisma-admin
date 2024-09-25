@@ -1,11 +1,7 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table"
 import { ColumnDef } from "@tanstack/react-table"
-import { EditIcon } from "lucide-react"
-import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
 import { CellAction } from "./cell-action"
 
 export type CategoryColumn = {
@@ -14,7 +10,7 @@ export type CategoryColumn = {
   products: number
 }
 
-export const columns: ColumnDef<CategoryColumn[]> = [
+export const columns: ColumnDef<CategoryColumn>[] = [
   {
     accessorKey: "title",
     header: "Title",
@@ -25,6 +21,14 @@ export const columns: ColumnDef<CategoryColumn[]> = [
   },
   {
     id: "actions",
-    cell: {},
+    cell: ({ row }) => <CellAction data={row.original} />,
   },
 ]
+
+interface CategoriesClientProps {
+  data: CategoryColumn[]
+}
+
+export const CategoriesClient: React.FC<CategoriesClientProps> = ({ data }) => {
+  return <DataTable searchKey="title" columns={columns} data={data} />
+}
