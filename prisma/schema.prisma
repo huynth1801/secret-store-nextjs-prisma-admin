@@ -79,7 +79,11 @@ model Product {
   meta          Json?
 
   price         Float
+  discount      Float @default(0)
   stock         Int   @default(0)
+
+  isAvailable Boolean @default(false)
+  isFeatured  Boolean @default(false)
 
   categories    Category[]
 

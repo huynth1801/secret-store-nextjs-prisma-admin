@@ -1,11 +1,7 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { DataTable } from "@/components/ui/data-table"
 import { ColumnDef } from "@tanstack/react-table"
-import { CheckIcon, EditIcon, XIcon } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { CheckIcon, EditIcon } from "lucide-react"
 import CellAction from "./cell-action"
 
 export type ProductColumn = {
@@ -13,14 +9,9 @@ export type ProductColumn = {
   title: string
   price: string
   discount: string
-  color: string
+  color?: string
   category: string
-  sales: number
   isAvailable: boolean
-}
-
-interface ProductTableProps {
-  data: ProductColumn[]
 }
 
 export const columns: ColumnDef<ProductColumn>[] = [
@@ -40,10 +31,10 @@ export const columns: ColumnDef<ProductColumn>[] = [
     accessorKey: "category",
     header: "Category",
   },
-  {
-    accessorKey: "sales",
-    header: "Sale",
-  },
+  // {
+  //   accessorKey: "sales",
+  //   header: "Sale",
+  // },
   {
     accessorKey: "color",
     header: "Color",
@@ -67,7 +58,3 @@ export const columns: ColumnDef<ProductColumn>[] = [
     cell: ({ row }) => <CellAction data={row.original} />,
   },
 ]
-
-export const ProductsTable: React.FC<ProductTableProps> = ({ data }) => {
-  return <DataTable searchKey="title" columns={columns} data={data} />
-}

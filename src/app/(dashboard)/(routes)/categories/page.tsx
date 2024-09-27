@@ -1,10 +1,6 @@
 import prisma from "@/lib/prisma"
-import { CategoriesClient, CategoryColumn } from "./components/table"
-import { Heading } from "@/components/ui/heading"
-import Link from "next/link"
-import { Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+import { CategoryColumn } from "./components/columns"
+import { CategoriesClient } from "./components/client"
 
 export default async function CategoryPage() {
   const categories = await prisma.category.findMany({
@@ -20,20 +16,10 @@ export default async function CategoryPage() {
   }))
 
   return (
-    <div className="my-6 block space-y-4">
-      <div className="flex items-center justify-between">
-        <Heading
-          title={`Categories (${categories.length})`}
-          description="Manage categories for your store"
-        />
-        <Link href={"/categories/new"}>
-          <Button>
-            <Plus className="mr-2 h-4" /> Add New
-          </Button>
-        </Link>
+    <div className="flex-col">
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <CategoriesClient data={formattedCategories} />
       </div>
-      <Separator />
-      <CategoriesClient data={formattedCategories} />
     </div>
   )
 }

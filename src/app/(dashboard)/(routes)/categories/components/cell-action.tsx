@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { BannersColumn, CategoryColumn } from "./table"
+import { BannersColumn, CategoryColumn } from "./columns"
 import {
   DropdownMenu,
   DropdownMenuContent,

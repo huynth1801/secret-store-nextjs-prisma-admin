@@ -1,11 +1,7 @@
 import prisma from "@/lib/prisma"
-import { BannersClient, BannersColumn } from "./components/table"
+import { BannersColumn } from "./components/columns"
+import { BannersClient } from "./components/client"
 import { format } from "date-fns"
-import { Heading } from "@/components/ui/heading"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
 
 export default async function BannerPage() {
   const banners = await prisma.banner.findMany({
@@ -21,20 +17,10 @@ export default async function BannerPage() {
   }))
 
   return (
-    <div className="block space-y-4 my-6">
-      <div className="flex items-center justify-between">
-        <Heading
-          title={`Banners (${banners.length})`}
-          description="Manage banners for your store"
-        />
-        <Link href={"/banners/new"}>
-          <Button>
-            <Plus className="mr-2 h-4" /> Add new
-          </Button>
-        </Link>
+    <div className="flex-col">
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <BannersClient data={formattedBanners} />
       </div>
-      <Separator />
-      <BannersClient data={formattedBanners} />
     </div>
   )
 }

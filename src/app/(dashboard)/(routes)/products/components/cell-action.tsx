@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState } from "react"
-import { ProductColumn } from "./table"
-import { useParams, useRouter } from "next/navigation"
+import { ProductColumn } from "./columns"
+import { useRouter } from "next/navigation"
 import { AlertModal } from "@/components/modals/alert-modal"
 import {
   DropdownMenu,
@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontalIcon, Delete, Edit } from "lucide-react"
+import axios from "axios"
+import toast from "react-hot-toast"
 
 interface CellActionProps {
   data: ProductColumn
@@ -20,20 +22,36 @@ interface CellActionProps {
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter()
-  const params = useParams()
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
+
+  const onDelete = async () => {
+    try {
+      setLoading(true)
+      await axios.delete(`/api/products/${data.id}`)
+      router.refresh()
+      toast.success("Products deleted.")
+    } catch (error) {
+      toast.error(
+        "Make sure you removed all categories using this products first."
+      )
+    } finally {
+      setLoading(false)
+      setOpen(false)
+    }
+  }
+
   return (
     <>
       <AlertModal
         isOpen={open}
         loading={loading}
         onClose={() => setOpen(false)}
-        onConfirm={() => {}}
+        onConfirm={onDelete}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8">
+          <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
             <MoreHorizontalIcon className="h-4 w-4" />
           </Button>
