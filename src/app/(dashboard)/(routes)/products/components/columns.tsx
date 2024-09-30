@@ -34,6 +34,11 @@ export const columns: ColumnDef<ProductColumn>[] = [
       )
     },
     enableSorting: true,
+    sortingFn: (rowA, rowB) => {
+      const priceA = parseFloat(rowA.original.price) || 0
+      const priceB = parseFloat(rowB.original.price) || 0
+      return priceA - priceB // Compare numeric values
+    },
   },
   {
     accessorKey: "discount",

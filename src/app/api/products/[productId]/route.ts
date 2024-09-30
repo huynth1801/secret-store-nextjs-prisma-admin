@@ -40,8 +40,31 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 })
     }
 
-    const { title, images, price, discount, stock, isFeatured, isAvailable } =
-      await req.json()
+    const {
+      title,
+      images,
+      price,
+      discount,
+      stock,
+      categoryId,
+      isFeatured,
+      isAvailable,
+    } = await req.json()
+
+    const categories = await prisma.category.findMany({
+      where: {
+        id: categoryId,
+      },
+    })
+
+    for (const category of categories) {
+      await prisma.category.update({
+        where: {
+          id: category.id,
+        },
+        data: { title: category.title },
+      })
+    }
 
     const product = await prisma.product.update({
       where: {
@@ -49,12 +72,15 @@ export async function PATCH(
       },
       data: {
         title,
-        images,
         price,
         discount,
         stock,
         isFeatured,
         isAvailable,
+        categories: {
+          connect: categories.map((cat) => ({ id: cat.id })),
+        },
+        images: [...images.map((image: { url: string }) => image)],
       },
     })
 
