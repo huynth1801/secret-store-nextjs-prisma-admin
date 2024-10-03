@@ -16,6 +16,7 @@ export async function POST(req: Request) {
       images,
       stock,
       categoryId,
+      description,
       isFeatured,
       isAvailable,
     } = await req.json()
@@ -26,8 +27,6 @@ export async function POST(req: Request) {
       },
     })
 
-    console.log(category)
-
     const product = await prisma.product.create({
       data: {
         title,
@@ -36,6 +35,7 @@ export async function POST(req: Request) {
         stock,
         isFeatured,
         isAvailable,
+        description,
         images,
         categories: {
           connect: {
@@ -63,8 +63,20 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
     const categoryId = searchParams.get("categoryId") || undefined
     const isFeatured = searchParams.get("isFeatured")
+    const isAvailable = searchParams.get("isAvailable")
 
-    const products = await prisma.product.findMany()
+    const products = await prisma.product.findMany({
+      where: {
+        isFeatured: isFeatured ? true : undefined,
+        isAvailable: isAvailable ? true : undefined,
+      },
+      include: {
+        categories: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
 
     return NextResponse.json(products)
   } catch (error) {

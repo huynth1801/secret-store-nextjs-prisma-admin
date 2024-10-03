@@ -23,10 +23,10 @@ export async function middleware(req: NextRequest) {
 
   const token = getToken()
 
-  if (!token) {
-    if (isTargetingAPI()) return getErrorResponse(401, "INVALID TOKEN")
-    return NextResponse.redirect(new URL("/login", req.url))
-  }
+  // if (!token) {
+  //   if (isTargetingAPI()) return getErrorResponse(401, "INVALID TOKEN")
+  //   return NextResponse.redirect(new URL("/login", req.url))
+  // }
 
   const response = NextResponse.next()
 
@@ -42,10 +42,10 @@ export async function middleware(req: NextRequest) {
       return getErrorResponse(401, "UNAUTHORIZED")
     }
 
-    const redirect = NextResponse.redirect(new URL(`/login`, req.url))
-    redirect.cookies.delete("token")
-    redirect.cookies.delete("logged-in")
-    return redirect
+    // const redirect = NextResponse.redirect(new URL(`/login`, req.url))
+    // redirect.cookies.delete("token")
+    // redirect.cookies.delete("logged-in")
+    // return redirect
   }
 
   return response

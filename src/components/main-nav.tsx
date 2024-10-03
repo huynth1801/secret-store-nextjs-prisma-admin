@@ -31,6 +31,11 @@ export function MainNav({
       label: "Orders",
       active: pathname.includes(`/orders`),
     },
+    {
+      href: `/colors`,
+      label: "Colors",
+      active: pathname.includes(`/colors`),
+    },
   ]
 
   return (

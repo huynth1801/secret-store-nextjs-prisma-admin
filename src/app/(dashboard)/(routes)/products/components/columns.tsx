@@ -23,13 +23,23 @@ export const columns: ColumnDef<ProductColumn>[] = [
   {
     accessorKey: "price",
     header: ({ column }) => {
+      const isSorted = column.getIsSorted()
       return (
         <Button
           variant={"ghost"}
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center"
         >
           Price
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown
+            className={`ml-2 h-4 w-4 transition-transform ${
+              isSorted === "asc"
+                ? "text-blue-500 rotate-180"
+                : isSorted === "desc"
+                ? "text-blue-500"
+                : "text-gray-500"
+            }`}
+          />
         </Button>
       )
     },

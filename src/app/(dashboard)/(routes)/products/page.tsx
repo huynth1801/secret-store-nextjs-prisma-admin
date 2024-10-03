@@ -8,6 +8,7 @@ const ProductPage = async () => {
   const products = await prisma.product.findMany({
     include: {
       categories: true,
+      colors: true,
     },
     orderBy: {
       createdAt: "desc",
@@ -19,6 +20,7 @@ const ProductPage = async () => {
     title: product.title,
     price: formatter.format(product.price),
     discount: formatter.format(product.discount),
+    color: product.colors?.value,
     category: product.categories[0].title,
     isAvailable: product.isAvailable,
   }))

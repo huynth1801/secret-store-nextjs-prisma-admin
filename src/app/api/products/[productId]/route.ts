@@ -47,7 +47,9 @@ export async function PATCH(
       discount,
       stock,
       categoryId,
+      colorId,
       isFeatured,
+      description,
       isAvailable,
     } = await req.json()
 
@@ -76,7 +78,9 @@ export async function PATCH(
         discount,
         stock,
         isFeatured,
+        colorId,
         isAvailable,
+        description,
         categories: {
           connect: categories.map((cat) => ({ id: cat.id })),
         },
