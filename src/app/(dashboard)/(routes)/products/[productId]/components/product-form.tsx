@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { MultiSelect } from "@/components/ui/multi-select"
 import { Separator } from "@/components/ui/separator"
 import type { ProductWithIncludes } from "@/types/prisma"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -43,7 +44,7 @@ const formSchema = z.object({
   discount: z.coerce.number().min(0, "Discount must be at least 0"),
   stock: z.coerce.number().min(0, "Stock must be at least 0"),
   categoryId: z.string().min(1, "Category is required"),
-  colorId: z.string().min(1, "Color ID is required"),
+  colors: z.array(z.string()).min(1, "Color ID is required"),
   description: z.string().min(5, "Description is required"),
   isFeatured: z.boolean().default(false).optional(),
   isAvailable: z.boolean().default(false).optional(),
@@ -68,6 +69,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [color, setColor] = useState<string[]>([""])
 
   const title = initialData ? "Edit product" : "Create product"
   const description = initialData
@@ -82,7 +84,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         ...initialData,
         price: parseFloat(String(initialData?.price.toFixed(2))),
         discount: parseFloat(String(initialData?.discount.toFixed(2))),
-        colorId: initialData.colorId ?? undefined,
+        colors: colors?.map((color) => color.id) ?? [],
       }
     : {
         title: "",
@@ -91,7 +93,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         discount: 0,
         stock: 0,
         categoryId: "",
-        colorId: "",
+        colors: [],
         description: "",
         isFeatured: false,
         isAvailable: false,
@@ -308,32 +310,41 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="colorId"
+              name="colors"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Color</FormLabel>
-                  <Select
-                    disabled={loading}
+                  {/* <Select
+                      disabled={loading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            defaultValue={field.value}
+                            placeholder="Select a color"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {colors.length >= 0 &&
+                          colors.map((color) => (
+                            <SelectItem key={color.id} value={color.id}>
+                              {color.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select> */}
+                  <MultiSelect
+                    options={colors}
                     onValueChange={field.onChange}
+                    defaultValue={field.value}
                     value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a color"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {colors.length >= 0 &&
-                        colors.map((color) => (
-                          <SelectItem key={color.id} value={color.id}>
-                            {color.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Select colors"
+                    variant={"inverted"}
+                    onChange={field.onChange}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

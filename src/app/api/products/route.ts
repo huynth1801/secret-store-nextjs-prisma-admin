@@ -18,12 +18,19 @@ export async function POST(req: Request) {
       categoryId,
       description,
       isFeatured,
+      colors,
       isAvailable,
     } = await req.json()
 
     const category = await prisma.category.findFirst({
       where: {
         id: categoryId,
+      },
+    })
+
+    const colorId = await prisma.color.findFirst({
+      where: {
+        value: colors.value,
       },
     })
 
@@ -41,6 +48,17 @@ export async function POST(req: Request) {
           connect: {
             id: categoryId,
           },
+        },
+        colors: {
+          connectOrCreate: colors.map(
+            (color: { value: string; name: string }) => ({
+              where: { id: colorId?.id },
+              create: {
+                name: color.name,
+                value: color.value,
+              },
+            })
+          ),
         },
       },
     })
