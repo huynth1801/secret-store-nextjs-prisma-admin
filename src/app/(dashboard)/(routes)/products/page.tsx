@@ -1,6 +1,6 @@
 import React from "react"
 import prisma from "@/lib/prisma"
-import { formatter } from "@/lib/utils"
+import { formatter, percentageFormatter } from "@/lib/utils"
 import { ProductColumn } from "./components/columns"
 import { ProductClient } from "./components/client"
 
@@ -19,8 +19,8 @@ const ProductPage = async () => {
     id: product.id,
     title: product.title,
     price: formatter.format(product.price),
-    discount: formatter.format(product.discount),
-    color: product.colors?.value,
+    discount: percentageFormatter.format(product.discount / 100),
+    color: product.colors[0]?.value,
     category: product.categories[0].title,
     isAvailable: product.isAvailable,
   }))

@@ -1,9 +1,25 @@
+"use client"
+
 import { MainNav } from "./main-nav"
 import { ModeToggle } from "./mode-toggle"
 import Link from "next/link"
 import { LoggoutButton } from "./logout-button"
+import { useAuth } from "@/hooks/use-auth"
+import { Button } from "./ui/button"
+import { LogInIcon } from "lucide-react"
+import { parseCookies } from "nookies"
+import { useCallback } from "react"
 
 export default function Navbar() {
+  const getToken = useCallback(() => {
+    if (typeof window !== "undefined") {
+      const cookies = parseCookies()
+      return cookies["logged-in"]
+    }
+    return null
+  }, [])
+
+  const isAuthenticated = getToken()
   return (
     <div
       className="border-b flex justify-between h-16 items-center 
@@ -19,8 +35,19 @@ export default function Navbar() {
       </div>
       <div className="flex items-center gap-2">
         <ModeToggle />
-        <LoggoutButton />
+        {isAuthenticated ? <LoggoutButton /> : <LoginDialog />}
       </div>
     </div>
+  )
+}
+
+const LoginDialog = () => {
+  return (
+    <Link href="/login">
+      <Button className="font-medium flex gap-2">
+        <LogInIcon className="h-4" />
+        <p>Sign in</p>
+      </Button>
+    </Link>
   )
 }
