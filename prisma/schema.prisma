@@ -111,7 +111,6 @@ model Product {
   updatedAt   DateTime  @updatedAt
 }
 
-
 model Address {
   id        String    @id     @default(cuid())
   country   String    @default("VN")
@@ -133,8 +132,11 @@ model Order {
   number  Int         @unique   @default(autoincrement())
   status  OrderStatusEnum
 
+  color     String?
   total     Float   @default(100)
   shipping  Float   @default(100)
+  tax       Float   @default(100)
+  payable   Float @default(100)
   discount  Float   @default(100)
 
   isPaid      Boolean     @default(false)
@@ -157,6 +159,7 @@ model OrderItem {
   order     Order   @relation(fields: [orderId], references: [id])
   orderId   String
   product   Product @relation(fields: [productId], references: [id])
+  colorId    String?
   productId String
   count     Int
   price     Float
@@ -193,6 +196,7 @@ model CartItem {
   product     Product   @relation(fields: [productId], references: [id])
   productId   String
   count       Int
+  colorId     String
 
-  @@unique([cartId, productId], name: "UniqueCartItem")
+  @@unique([cartId, productId, colorId], name: "UniqueCartItem")
 }
