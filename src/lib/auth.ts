@@ -2,8 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { sign, verify } from "jsonwebtoken"
 import { hash, compare } from "bcryptjs"
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
-
 export const hashPassword = (password: string) => hash(password, 10)
 
 export const comparePassword = (password: string, hashedPassword: string) =>
