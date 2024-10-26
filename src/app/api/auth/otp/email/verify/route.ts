@@ -8,7 +8,8 @@ export async function POST(req: NextRequest) {
   try {
     const expiryMinutes = 30 * 24 * 60
 
-    let { email, OTP } = await req.json()
+    let { email } = await req.json()
+    const { OTP } = await req.json()
 
     email = email.toString().toLowerCase()
 

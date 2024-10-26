@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { BannersColumn, CategoryColumn } from "./columns"
+import { CategoryColumn } from "./columns"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +10,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Edit, Delete, MoreHorizontal, Copy } from "lucide-react"
+import { Edit, Delete, MoreHorizontal } from "lucide-react"
 import toast from "react-hot-toast"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import axios from "axios"
 import { AlertModal } from "@/components/modals/alert-modal"
 
@@ -22,7 +22,6 @@ interface CellActionProps {
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter()
-  const params = useParams()
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
 

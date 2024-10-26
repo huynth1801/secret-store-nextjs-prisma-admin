@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { AlertModal } from "@/components/modals/alert-modal"
-import { useOrigin } from "@/app/hooks/use-origin"
 import ImageUpload from "@/components/ui/image-upload"
 import { Banner } from "@prisma/client"
 import { useState } from "react"
@@ -39,7 +38,6 @@ interface BannerFormProps {
 export const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
   const router = useRouter()
   const params = useParams()
-  const origin = useOrigin()
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)

@@ -24,7 +24,7 @@ import { Banner, Category } from "@prisma/client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
-import { cache, useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import axios from "axios"
@@ -97,7 +97,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
       router.refresh()
       router.push(`/categories`)
       toast.success("Category deleted.")
-    } catch (error: any) {
+    } catch (error) {
       toast.error(
         "Make sure you removed all products using this category first."
       )

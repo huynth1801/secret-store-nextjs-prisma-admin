@@ -22,12 +22,6 @@ export async function POST(req: Request) {
       isAvailable,
     } = await req.json()
 
-    const category = await prisma.category.findFirst({
-      where: {
-        id: categoryId,
-      },
-    })
-
     const colorId = await prisma.color.findFirst({
       where: {
         value: colors.value,
@@ -79,7 +73,6 @@ export async function GET(req: Request) {
     }
 
     const { searchParams } = new URL(req.url)
-    const categoryId = searchParams.get("categoryId") || undefined
     const isFeatured = searchParams.get("isFeatured")
     const isAvailable = searchParams.get("isAvailable")
 

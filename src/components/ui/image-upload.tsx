@@ -13,12 +13,6 @@ interface ImageUploadProps {
   value: string[]
 }
 
-interface CloudinaryUploadResult {
-  info: {
-    secure_url: string
-  }
-}
-
 const ImageUpload: React.FC<ImageUploadProps> = ({
   disabled,
   onChange,

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Copy, Delete, Edit, MoreHorizontal } from "lucide-react"
 import toast from "react-hot-toast"
 import axios from "axios"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { AlertModal } from "@/components/modals/alert-modal"
 
 interface CellActionProps {
@@ -22,7 +22,6 @@ interface CellActionProps {
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter()
-  const params = useParams()
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
 

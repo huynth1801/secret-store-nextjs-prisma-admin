@@ -2,8 +2,14 @@
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 
+// Define a type for each data item in the array
+interface DataItem {
+  name: string
+  total: number
+}
+
 interface OverviewProps {
-  data: any[]
+  data: DataItem[]
 }
 
 export const Overview: React.FC<OverviewProps> = ({ data }) => {

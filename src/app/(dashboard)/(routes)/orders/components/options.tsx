@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { cn, isVariableValid } from "@/lib/utils"
-import { slugify } from "@persepolis/slugify"
 import { Category } from "@prisma/client"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"

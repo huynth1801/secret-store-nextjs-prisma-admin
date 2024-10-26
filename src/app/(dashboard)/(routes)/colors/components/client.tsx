@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
 import { Separator } from "@/components/ui/separator"
 import { Plus } from "lucide-react"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { ColorColumn, columns } from "./column"
 import { DataTable } from "@/components/ui/data-table"
 
@@ -14,7 +14,6 @@ interface ColumnClientProps {
 
 export const ColorsClient: React.FC<ColumnClientProps> = ({ data }) => {
   const router = useRouter()
-  const params = useParams()
   return (
     <>
       <div className="flex items-center justify-between">

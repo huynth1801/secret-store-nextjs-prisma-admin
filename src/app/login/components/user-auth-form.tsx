@@ -17,7 +17,6 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [fetchedOTP, setFetchedOTP] = React.useState<boolean>(false)
-  const [verificationId, setVerificationId] = React.useState<string>("")
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
