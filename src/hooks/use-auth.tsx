@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { parseCookies, setCookie, destroyCookie } from "nookies"
+import { parseCookies, destroyCookie } from "nookies"
 
 type User = {
   id: string
