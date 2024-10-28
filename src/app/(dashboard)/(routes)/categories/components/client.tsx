@@ -22,7 +22,7 @@ export const CategoriesClient: React.FC<CategoryClientProps> = ({ data }) => {
           title={`Category (${data.length})`}
           description="Manage category for your store"
         />
-        <Button onClick={() => router.push("/category/new")}>
+        <Button onClick={() => router.push("/categories/new")}>
           <Plus className="h-4 w-4" /> Add New
         </Button>
       </div>

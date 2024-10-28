@@ -22,12 +22,6 @@ export async function POST(req: Request) {
       isAvailable,
     } = await req.json()
 
-    const colorId = await prisma.color.findFirst({
-      where: {
-        value: colors.value,
-      },
-    })
-
     const product = await prisma.product.create({
       data: {
         title,
@@ -44,13 +38,19 @@ export async function POST(req: Request) {
           },
         },
         colors: {
-          connectOrCreate: colors.map(
-            (color: { value: string; name: string }) => ({
-              where: { id: colorId?.id },
-              create: {
-                name: color.name,
-                value: color.value,
-              },
+          connectOrCreate: await Promise.all(
+            colors.map(async (color: { value: string; name: string }) => {
+              const existingColor = await prisma.color.findFirst({
+                where: { value: color.value },
+              })
+
+              return {
+                where: { id: existingColor?.id || "" },
+                create: {
+                  name: existingColor?.name || color.name,
+                  value: existingColor?.value || color.value,
+                },
+              }
             })
           ),
         },

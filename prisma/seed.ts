@@ -164,35 +164,35 @@ async function main() {
   }
 
   // Add product
-  try {
-    for (const product of products) {
-      const createdProduct = await prisma.product.create({
-        data: {
-          isAvailable: getRandomBoolean(),
-          title: product.title,
-          price: getRandomFloat(20000, 200000, 2),
-          stock: getRandomIntInRange(1, 100),
-          discount: getRandomIntInRange(10, 50),
-          description: "Description of this products.",
-          images: product.images,
-          keywords: product.keywords,
-          categories: {
-            connect: {
-              title: product.categories[0],
-            },
-          },
-        },
-        include: {
-          categories: true,
-        },
-      })
-      console.log(createdProduct)
-      createdProducts.push(createdProduct)
-    }
-    console.log("Created sample products")
-  } catch (error) {
-    console.error("Could not create product")
-  }
+  // try {
+  //   for (const product of products) {
+  //     const createdProduct = await prisma.product.create({
+  //       data: {
+  //         isAvailable: getRandomBoolean(),
+  //         title: product.title,
+  //         price: getRandomFloat(20000, 200000, 2),
+  //         stock: getRandomIntInRange(1, 100),
+  //         discount: getRandomIntInRange(10, 50),
+  //         description: "Description of this products.",
+  //         images: product.images,
+  //         keywords: product.keywords,
+  //         categories: {
+  //           connect: {
+  //             title: product.categories[0],
+  //           },
+  //         },
+  //       },
+  //       include: {
+  //         categories: true,
+  //       },
+  //     })
+  //     console.log(createdProduct)
+  //     createdProducts.push(createdProduct)
+  //   }
+  //   console.log("Created sample products")
+  // } catch (error) {
+  //   console.error("Could not create product")
+  // }
 }
 
 try {
